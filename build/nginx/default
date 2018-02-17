@@ -1,29 +1,43 @@
-server {
-	listen 80 default_server;
+worker_processes 4;
+events { worker_connections 1024; }
 
-	root /var/www/html/public;
+http {
 
-	index index.html index.htm index.php;
+        upstream node-app {
+              least_conn;
+              server node1:8080 weight=10 max_fails=3 fail_timeout=30s;
+              server node2:8080 weight=10 max_fails=3 fail_timeout=30s;
+              server node3:8080 weight=10 max_fails=3 fail_timeout=30s;
+        }
+         
+        server {
+              listen 80 default_server;
+			  root /var/www/html/public;
 
-	server_name _;
+	          location = /favicon.ico { log_not_found off; access_log off; }
+			  location = /robots.txt  { log_not_found off; access_log off; }			  
+         
+              location / {
+                proxy_pass http://node-app;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+              }
 
-	charset utf-8;
+			  location ~ \.php$ {
+			  	include snippets/fastcgi-php.conf;
+				fastcgi_pass php:9000;
+		  	  }
 
-	location = /favicon.ico { log_not_found off; access_log off; }
-	location = /robots.txt  { log_not_found off; access_log off; }
+			  error_page 404 /index.php;
 
-	location / {
-		try_files $uri $uri/ /index.php$is_args$args;
-	}
-
-	location ~ \.php$ {
-		include snippets/fastcgi-php.conf;
-		fastcgi_pass php:9000;
-	}
-
-	error_page 404 /index.php;
-
-	location ~ /\.ht {
-		deny all;
-	}
+			  location ~ /\.ht {
+				deny all;
+			  }			  
+        }
 }
+
+
+

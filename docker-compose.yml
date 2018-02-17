@@ -1,54 +1,93 @@
 version: '3'
 services:
   nginx:
-    image: chipsofttech/nginx:latest
-    ports:
-     - "80:80"
-     - "443:443"
-    volumes:
-     - ./application:/var/www/html
-    networks:
-     - appnet
-    restart: always
-  php:
-    image: chipsofttech/php:latest
-    volumes:
-     - ./application:/var/www/html
-    networks:
-     - appnet
-    restart: always
+      container_name: nginx
+      build: ./nginx
+      links:
+          - node1:node1
+          - node2:node2
+          - node3:node3
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes:
+      - ./vdata/nginx:/var/www/html
+      networks:
+      - appnet
+      restart: always        
+  node1:
+      container_name: node1
+      build: ./node
+      links:
+          - redis
+      ports:
+          - "8080"
+      networks:
+      - appnet
+      restart: always
+  node2:
+      container_name: node2
+      build: ./node
+      links:
+          - redis
+      ports:
+          - "8080"
+      networks:
+      - appnet
+      restart: always
+  node3:
+      container_name: node3
+      build: ./node
+      links:
+          - redis
+      ports:
+          - "8080"
+      networks:
+      - appnet
+      restart: always
   redis:
-    image: redis:alpine
-    networks:
-     - appnet
-    restart: always
-  mysql:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-    volumes:
-     - data:/var/lib/mysql
-    networks:
-     - appnet
-    restart: always 
-  ghost:
-    image: ghost:1-alpine
-    restart: always
-    ports:
-      - 8080:2368
-  jenkins:
-    image: "jenkinsci/jenkins"
-    restart: always
-    ports:
-    - "8080:8080"
-    volumes: 
-    - ./vdata/jenkins:/var/jenkins_home
-networks:
-  appnet:
-    driver: "bridge"
-volumes:
-  data:
-    driver: "local"
+      container_name: redis
+      image: redis
+      ports:
+          - "6379"
+      networks:
+      - appnet
+      restart: always
+    mysql:
+      container_name: mysql
+      image: mysql:5.7
+      environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: homestead
+        MYSQL_USER: homestead
+        MYSQL_PASSWORD: secret
+      volumes:
+      - ./vdata/mysql:/var/lib/mysql
+      networks:
+      - appnet
+      restart: always 
+    ghost:
+      container_name: ghost
+      image: ghost:1-alpine
+      restart: always
+      ports:
+        - 8080:2368
+      volumes:
+      - ./vdata/ghost/blog:/var/lib/ghost
+    jenkins:
+      container_name: jenkins
+      image: "jenkinsci/jenkins"
+      restart: always
+      ports:
+      - "8080:8080"
+      volumes: 
+      - ./vdata/jenkins:/var/jenkins_home
+  networks:
+    appnet:
+      driver: "bridge"
+  volumes:
+    data:
+      driver: "local"
+
+
+    

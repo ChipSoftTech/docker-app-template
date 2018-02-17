@@ -1,4 +1,4 @@
-version: '3'
+version: '4'
 services:
   nginx:
     image: chipsofttech/nginx:latest
@@ -44,7 +44,7 @@ services:
     restart: always
     ports:
     - "8080:8080"
-    volumes:
+    volumes: ./vdata/jenkins:/var/jenkins_home
 networks:
   appnet:
     driver: "bridge"

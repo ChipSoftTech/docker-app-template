@@ -41,18 +41,13 @@ services:
       - 8080:2368
   jenkins:
     image: "jenkinsci/jenkins"
+    restart: always
     ports:
     - "8080:8080"
     volumes:
-     - jenkins:/var/jenkins_home
 networks:
   appnet:
     driver: "bridge"
 volumes:
   data:
     driver: "local"
-  jenkins:
-    driver_opts:
-      type: none
-      device: ./vdata/jenkins
-      o: bind    

@@ -54,5 +54,5 @@ volumes:
   jenkins:
     driver_opts:
       type: none
-      device: ./jenkins
+      device: ./vdata/jenkins
       o: bind    

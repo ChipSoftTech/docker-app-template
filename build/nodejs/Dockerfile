@@ -1,32 +1,44 @@
 # Set the base image to Ubuntu
-FROM    ubuntu:trusty
+FROM node:carbon
 
 # Vendor & Version
 LABEL       vendor="Chippewa Softare Technology"
 LABEL       version="1.0.0-beta"
 
-# Install Node.js and other dependencies
-RUN apt-get update && \
-    apt-get -y install curl && \
-    curl -sL https://deb.nodesource.com/setup | sudo bash - && \
-    apt-get -y install python build-essential nodejs
-
-# Install nodemon
-RUN npm install -g nodemon
-
-# Provides cached layer for node_modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /src && cp -a /tmp/node_modules /src/
-
-# Define working directory
+# Create app directory
 RUN mkdir ./vdata/nodejs
 VOLUME ./vdata/nodejs
 WORKDIR ./vdata/nodejs
-ADD . ./vdata/nodejs
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+# Provides cached layer for node_modules
+COPY package*.json ./
+RUN npm install
+
+#ADD package*.json /tmp/package.json
+#RUN cd /tmp && npm install
+# If you are building your code for production
+# RUN cd /tmp && npm install --only=production
+
+#Copy over node modules to source code
+#RUN cp -a /tmp/node_modules ./vdata/nodejs
+
+# Bundle app source
+#COPY . .
 
 # Expose port
 EXPOSE  8080
 
 # Run app using nodemon
-CMD ["nodemon", "/src/index.js"]
+#CMD ["nodemon", "start"]
+# 
+CMD [ "npm", "start" ]
+
+
+
+
+
+
+

@@ -1,33 +1,26 @@
 # Set the base image to Ubuntu
 FROM node:carbon
 
+# Create app directory
+WORKDIR /usr/src/app
+
 # Vendor & Version
 LABEL       vendor="Chippewa Softare Technology"
 LABEL       version="1.0.0-beta"
 
-# Create app directory
-VOLUME ./vdata/nodejs
-WORKDIR ./vdata/nodejs
-
 # Install app dependencies
-# Provides cached layer for node_modules
-ADD ./vdata/nodejs/package.json /tmp/package.json
-RUN cd /tmp && npm install
-# If you are building your code for production
-# RUN cd /tmp && npm install --only=production
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-#Copy over node modules to source code
-RUN cp -a /tmp/node_modules ./vdata/nodejs
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
 
 # Bundle app source
-#COPY . .
+COPY . .
 
-# Expose port
-EXPOSE  8080
-
-# Run app using nodemon
-#CMD ["nodemon", "start"]
-# 
+EXPOSE 8080
 CMD [ "npm", "start" ]
 
 

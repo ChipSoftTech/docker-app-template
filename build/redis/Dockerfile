@@ -1,8 +1,9 @@
 # Set the base image to Ubuntu
 FROM        ubuntu
 
-# File Author / Maintainer
-MAINTAINER Brian Carter
+# Vendor & Version
+LABEL vendor="Chippewa Softare Technology"
+LABEL version="1.0.0-beta"
 
 # Update the repository and install Redis Server
 RUN         apt-get update && apt-get install -y redis-server

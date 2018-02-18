@@ -6,7 +6,6 @@ LABEL       vendor="Chippewa Softare Technology"
 LABEL       version="1.0.0-beta"
 
 # Create app directory
-RUN mkdir ./vdata/nodejs
 VOLUME ./vdata/nodejs
 WORKDIR ./vdata/nodejs
 

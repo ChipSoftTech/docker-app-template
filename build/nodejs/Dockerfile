@@ -10,10 +10,8 @@ VOLUME ./vdata/nodejs
 WORKDIR ./vdata/nodejs
 
 # Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 # Provides cached layer for node_modules
-ADD package*.json /tmp/package.json
+ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 # If you are building your code for production
 # RUN cd /tmp && npm install --only=production

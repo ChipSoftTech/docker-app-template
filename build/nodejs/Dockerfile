@@ -1,8 +1,9 @@
 # Set the base image to Ubuntu
 FROM    ubuntu:trusty
 
-# File Author / Maintainer
-MAINTAINER Brian Carter
+# Vendor & Version
+LABEL       vendor="Chippewa Softare Technology"
+LABEL       version="1.0.0-beta"
 
 # Install Node.js and other dependencies
 RUN apt-get update && \
@@ -19,8 +20,10 @@ RUN cd /tmp && npm install
 RUN mkdir -p /src && cp -a /tmp/node_modules /src/
 
 # Define working directory
-WORKDIR /src
-ADD . /src
+RUN mkdir ./vdata/nodejs
+VOLUME ./vdata/nodejs
+WORKDIR ./vdata/nodejs
+ADD . ./vdata/nodejs
 
 # Expose port
 EXPOSE  8080

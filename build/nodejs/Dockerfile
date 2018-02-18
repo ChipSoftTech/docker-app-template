@@ -11,7 +11,7 @@ WORKDIR ./vdata/nodejs
 
 # Install app dependencies
 # Provides cached layer for node_modules
-ADD package.json /tmp/package.json
+ADD ./vdata/nodejs/package.json /tmp/package.json
 RUN cd /tmp && npm install
 # If you are building your code for production
 # RUN cd /tmp && npm install --only=production

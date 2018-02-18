@@ -13,16 +13,13 @@ WORKDIR ./vdata/nodejs
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 # Provides cached layer for node_modules
-COPY package*.json ./
-RUN npm install
-
-#ADD package*.json /tmp/package.json
-#RUN cd /tmp && npm install
+ADD package*.json /tmp/package.json
+RUN cd /tmp && npm install
 # If you are building your code for production
 # RUN cd /tmp && npm install --only=production
 
 #Copy over node modules to source code
-#RUN cp -a /tmp/node_modules ./vdata/nodejs
+RUN cp -a /tmp/node_modules ./vdata/nodejs
 
 # Bundle app source
 #COPY . .
